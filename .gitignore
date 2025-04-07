@@ -1,0 +1,49 @@
+# Visual Studio specific files
+.vscode/
+*.code-workspace
+
+# Build directories
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# Visual Studio temporary files
+*.obj
+*.exe
+*.pch
+*.pdb
+*.idb
+*.ilk
+*.log
+*.tlog
+*.lastbuildstate
+*.suo
+*.user
+*.userosscache
+*.userprefs
+*.ipch
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+
+# Backup and hidden files
+*.bak
+*.ncb
+*.cache
+*.~*
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Other
+*.o
+*.out
+*.tmp
+*.log
+.vs/
