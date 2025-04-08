@@ -1,4 +1,11 @@
 #pragma once
+
+enum ResourceType {
+	ELECTRO,
+	ULTRASOUND,
+	EXERCISE,
+};
+
 class Resource
 {
 public:
@@ -10,8 +17,3 @@ private:
 	int capacity;
 };
 
-enum ResourceType {
-	ELECTRO,
-	ULTRASOUND,
-	EXERCISE,
-};

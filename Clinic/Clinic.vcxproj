@@ -127,11 +127,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ElectroTreatment.cpp" />
     <ClCompile Include="Patient.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="RoomTreatment.cpp" />
+    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Treatment.cpp" />
+    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="UltrasoundTreatment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayStack.h" />
+    <ClInclude Include="EarlyPList.h" />
+    <ClInclude Include="ElectroTreatment.h" />
+    <ClInclude Include="EU_WaitList.h" />
+    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="LinkedQueue.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Patient.h" />
+    <ClInclude Include="priNode.h" />
+    <ClInclude Include="priQueue.h" />
+    <ClInclude Include="QueueADT.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RoomTreatment.h" />
+    <ClInclude Include="Scheduler.h" />
+    <ClInclude Include="StackADT.h" />
+    <ClInclude Include="Treatment.h" />
+    <ClInclude Include="UI.h" />
+    <ClInclude Include="UltrasoundTreatment.h" />
+    <ClInclude Include="X_WaitList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
