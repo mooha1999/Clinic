@@ -43,11 +43,8 @@ Single Node Case:
 
 #include "Node.h"
 #include "QueueADT.h"
-#include "Patient.h"
 #include <iostream>
 using namespace std;
-
-class Patient; // Forward declaration of Patient class
 
 template <typename T>
 class LinkedQueue : public QueueADT<T>
@@ -62,16 +59,16 @@ public:
 	bool enqueue(const T &newEntry);
 	bool dequeue(T &frntEntry);
 	bool peek(T &frntEntry) const;
-	void print() const
+	int getSize() const
 	{
-		if (!isEmpty())
+		Node<T> *current = frontPtr;
+		int size = 0;
+		while (current != nullptr)
 		{
-			// check if T is of type Patient* using dynamic_cast
-
-			Patient *p = dynamic_cast<Patient *>(frontPtr->getItem());
-			if (!p)
-				return;
+			size++;
+			current = current->getNext();
 		}
+		return size;
 	}
 	~LinkedQueue();
 };

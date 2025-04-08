@@ -1,6 +1,7 @@
 #pragma once
 
-enum ResourceType {
+enum ResourceType
+{
 	ELECTRO,
 	ULTRASOUND,
 	EXERCISE,
@@ -9,11 +10,11 @@ enum ResourceType {
 class Resource
 {
 public:
-	Resource(int id, ResourceType type, int capacity = 1) :
-		id(id), type(type), capacity(capacity) {}
+	Resource(int id, ResourceType type, int capacity = 1) : id(id), type(type), capacity(capacity) {}
+	int getId();
+
 private:
 	int id;
 	ResourceType type;
 	int capacity;
 };
-

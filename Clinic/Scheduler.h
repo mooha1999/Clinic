@@ -29,6 +29,7 @@ private:
 	EU_WaitList *electromagneticWaitList,
 			*ultrasonicWaitList;
 	X_WaitList *exerciseWaitList;
+	UI ui;
 
 	int pCancel, pReschedule;
 	int patientCount;

@@ -246,6 +246,7 @@ void Scheduler::simulate()
     {
       handleCurrentPatient(currentPatient, timestep);
       randomGenerator(timestep);
+      ui.printData(timestep, *allPatients, *latePatients, *electromagneticDevices, *ultrasonicDevices, *exerciseRooms, *inTreatmentPatients, *finishedPatients, *earlyPatients, *electromagneticWaitList, *ultrasonicWaitList, *exerciseWaitList);
     }
     timestep++;
   }
