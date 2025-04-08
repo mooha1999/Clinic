@@ -1,64 +1,76 @@
 
 /*
 This is a program that implements the queue abstract data type using a linked list.
-The queue is implemented as a chain of linked nodes that has two pointers, 
+The queue is implemented as a chain of linked nodes that has two pointers,
 a frontPtr pointer for the front of the queue and a backPtr pointer for the back of the queue.
 */
 
 /*
 
 				The Node: item of type T and a "next" pointer
-					------------- 
+					-------------
 					| item| next | --->
 					-------------
 General Queue case:
 
-                 frontPtr																backPtr
-					\											   						/		
-					 \											  					   /		
-					------------- 	  ------------- 	  ------------- 	  ------------- 	  	  
+								 frontPtr																backPtr
+					\											   						/
+					 \											  					   /
+					------------- 	  ------------- 	  ------------- 	  -------------
 					| item| next |--->| item| next |--->  | item| next |--->  | item| next |---> NULL
-					------------- 	  ------------- 	  ------------- 	  -------------	  
-		
+					------------- 	  ------------- 	  ------------- 	  -------------
+
 Empty Case:
 
-                 frontptr	 backptr
-						\	 /				
-						 \	/				
+								 frontptr	 backptr
+						\	 /
+						 \	/
 					---- NULL ------
 
 
 Single Node Case:
-                 frontPtr	 backPtr
-					\		/	
-					 \	   /			
-					----------- 	
+								 frontPtr	 backPtr
+					\		/
+					 \	   /
+					-----------
 					|item| next| -->NULL
-					-----------	
+					-----------
 
 */
 
 #ifndef LINKED_QUEUE_
 #define LINKED_QUEUE_
 
-
 #include "Node.h"
 #include "QueueADT.h"
+#include "Patient.h"
 #include <iostream>
 using namespace std;
 
 template <typename T>
-class LinkedQueue:public QueueADT<T>
+class LinkedQueue : public QueueADT<T>
 {
-private :
-	Node<T>* backPtr;
-	Node<T>* frontPtr;
-public :
-	LinkedQueue();	
-	bool isEmpty() const ;
-	bool enqueue(const T& newEntry);
-	bool dequeue(T& frntEntry);  
-	bool peek(T& frntEntry)  const;	
+private:
+	Node<T> *backPtr;
+	Node<T> *frontPtr;
+
+public:
+	LinkedQueue();
+	bool isEmpty() const;
+	bool enqueue(const T &newEntry);
+	bool dequeue(T &frntEntry);
+	bool peek(T &frntEntry) const;
+	void print() const
+	{
+		if (!isEmpty())
+		{
+			// check if T is of type Patient* using dynamic_cast
+
+			Patient *p = dynamic_cast<Patient *>(frontPtr->getItem());
+			if (!p)
+				return;
+		}
+	}
 	~LinkedQueue();
 };
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -72,9 +84,8 @@ The constructor of the Queue class.
 template <typename T>
 LinkedQueue<T>::LinkedQueue()
 {
-	backPtr=nullptr;
-	frontPtr=nullptr;
-
+	backPtr = nullptr;
+	frontPtr = nullptr;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -88,7 +99,7 @@ Output: True if the queue is empty; otherwise false.
 template <typename T>
 bool LinkedQueue<T>::isEmpty() const
 {
-	return (frontPtr==nullptr);
+	return (frontPtr == nullptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -101,19 +112,18 @@ Output: True if the operation is successful; otherwise false.
 */
 
 template <typename T>
-bool LinkedQueue<T>::enqueue( const T& newEntry)
+bool LinkedQueue<T>::enqueue(const T &newEntry)
 {
-	Node<T>* newNodePtr = new Node<T>(newEntry);
+	Node<T> *newNodePtr = new Node<T>(newEntry);
 	// Insert the new node
-	if (isEmpty())	//special case if this is the first node to insert
+	if (isEmpty())					 // special case if this is the first node to insert
 		frontPtr = newNodePtr; // The queue is empty
 	else
 		backPtr->setNext(newNodePtr); // The queue was not empty
 
 	backPtr = newNodePtr; // New node is the last node now
-	return true ;
+	return true;
 } // end enqueue
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -126,25 +136,23 @@ Output: True if the operation is successful; otherwise false.
 */
 
 template <typename T>
-bool LinkedQueue<T>:: dequeue(T& frntEntry)  
+bool LinkedQueue<T>::dequeue(T &frntEntry)
 {
-	if(isEmpty())
+	if (isEmpty())
 		return false;
 
-	Node<T>* nodeToDeletePtr = frontPtr;
+	Node<T> *nodeToDeletePtr = frontPtr;
 	frntEntry = frontPtr->getItem();
 	frontPtr = frontPtr->getNext();
 	// Queue is not empty; remove front
-	if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
-		backPtr = nullptr ;	
-		
+	if (nodeToDeletePtr == backPtr) // Special case: last node in the queue
+		backPtr = nullptr;
+
 	// Free memory reserved for the dequeued node
 	delete nodeToDeletePtr;
 
 	return true;
 }
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -157,31 +165,31 @@ Output: The front of the queue.
 */
 
 template <typename T>
-bool LinkedQueue<T>:: peek(T& frntEntry) const 
+bool LinkedQueue<T>::peek(T &frntEntry) const
 {
-	if(isEmpty())
+	if (isEmpty())
 		return false;
 
 	frntEntry = frontPtr->getItem();
 	return true;
-
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 LinkedQueue<T>::~LinkedQueue()
 {
-	//Note that the cout statements here is just for learning purpose
-	//They should be normally removed from the destructor
-	cout<<"\nStarting LinkedQueue destructor...";
-	cout<<"\nFreeing all nodes in the queue...";
+	// Note that the cout statements here is just for learning purpose
+	// They should be normally removed from the destructor
+	cout << "\nStarting LinkedQueue destructor...";
+	cout << "\nFreeing all nodes in the queue...";
 
-	//Free all nodes in the queue
+	// Free all nodes in the queue
 	T temp;
-	while(dequeue(temp));
-	
-	cout<<"\n Is LinkedQueue Empty now?? ==> "<<boolalpha<<isEmpty();
-	cout<<"\nEnding LinkedQueue destructor..."<<endl;
+	while (dequeue(temp))
+		;
+
+	cout << "\n Is LinkedQueue Empty now?? ==> " << boolalpha << isEmpty();
+	cout << "\nEnding LinkedQueue destructor..." << endl;
 }
 
 #endif
