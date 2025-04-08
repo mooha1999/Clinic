@@ -47,6 +47,8 @@ Single Node Case:
 #include <iostream>
 using namespace std;
 
+class Patient; // Forward declaration of Patient class
+
 template <typename T>
 class LinkedQueue : public QueueADT<T>
 {
