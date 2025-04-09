@@ -68,6 +68,17 @@ public:
 		return top + 1;
 	} // end getSize
 
+	ArrayStack<T> clone() const
+	{
+		ArrayStack<T> newStack;
+		newStack.top = top;
+		for (int i = 0; i <= top; i++)
+		{
+			newStack.items[i] = items[i];
+		}
+		return newStack;
+	} // end clone
+
 }; // end ArrayStack
 
 #endif

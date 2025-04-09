@@ -245,9 +245,34 @@ void Scheduler::simulate()
     if (currentPatient != nullptr)
     {
       handleCurrentPatient(currentPatient, timestep);
-      randomGenerator(timestep);
-      ui.printData(timestep, *allPatients, *latePatients, *electromagneticDevices, *ultrasonicDevices, *exerciseRooms, *inTreatmentPatients, *finishedPatients, *earlyPatients, *electromagneticWaitList, *ultrasonicWaitList, *exerciseWaitList);
     }
+    randomGenerator(timestep);
+    // create clones for each list
+    LinkedQueue<Patient *> allPatientsClone = allPatients->clone();
+    priQueue<Patient *> latePatientsClone = latePatients->clone();
+    LinkedQueue<Resource *> electromagneticDevicesClone = electromagneticDevices->clone();
+    LinkedQueue<Resource *> ultrasonicDevicesClone = ultrasonicDevices->clone();
+    LinkedQueue<Resource *> exerciseRoomsClone = exerciseRooms->clone();
+    priQueue<Patient *> inTreatmentPatientsClone = inTreatmentPatients->clone();
+    ArrayStack<Patient *> finishedPatientsClone = finishedPatients->clone();
+    priQueue<Patient *> earlyPatientsClone = earlyPatients->clone();
+    LinkedQueue<Patient *> electromagneticWaitListClone = electromagneticWaitList->clone();
+    LinkedQueue<Patient *> ultrasonicWaitListClone = ultrasonicWaitList->clone();
+    LinkedQueue<Patient *> exerciseWaitListClone = exerciseWaitList->clone();
+
+    ui.printData(timestep,
+                 allPatientsClone,
+                 latePatientsClone,
+                 electromagneticDevicesClone,
+                 ultrasonicDevicesClone,
+                 exerciseRoomsClone,
+                 inTreatmentPatientsClone,
+                 finishedPatientsClone,
+                 earlyPatientsClone,
+                 electromagneticWaitListClone,
+                 ultrasonicWaitListClone,
+                 exerciseWaitListClone);
+
     timestep++;
   }
 }

@@ -13,10 +13,6 @@ public:
 
     ~priQueue()
     {
-        T tmp;
-        int p;
-        while (dequeue(tmp, p))
-            ;
     }
 
     // insert the new node in its correct position according to its priority
@@ -79,4 +75,17 @@ public:
         }
         return size;
     }
+
+	priQueue<T> clone() const
+	{
+		priQueue<T> newQueue;
+		priNode<T>* current = head;
+		while (current)
+		{
+			int i = current->getPri();
+			newQueue.enqueue(current->getItem(i), current->getPri());
+			current = current->getNext();
+		}
+		return newQueue;
+	}
 };

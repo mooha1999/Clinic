@@ -9,10 +9,10 @@ void UI::printData(
     LinkedQueue<Resource *> exerciseRooms,
     priQueue<Patient *> inTreatmentPatients,
     ArrayStack<Patient *> finishedPatients,
-    EarlyPList earlyPatients,
-    EU_WaitList electromagneticWaitList,
-    EU_WaitList ultrasonicWaitList,
-    X_WaitList exerciseWaitList)
+    priQueue<Patient *> earlyPatients,
+    LinkedQueue<Patient *> electromagneticWaitList,
+    LinkedQueue<Patient *> ultrasonicWaitList,
+    LinkedQueue<Patient *> exerciseWaitList)
 {
 
   cout << "Current timestep: " << timestep << endl;
@@ -139,7 +139,7 @@ void UI::printData(
 
   // Allow the user to press enter to continue
   cout << "Press enter to continue..." << endl;
-  cin.ignore();
-  cin.get();
+  //cin.ignore();
+  //cin.get();
   cout << endl;
 }

@@ -4,6 +4,6 @@ int main() {
 	Scheduler* scheduler = new Scheduler();
 	scheduler->readInputFile("input.txt");
 	scheduler->simulate();
-	delete scheduler;
+	//delete scheduler;
 	return 0;
 }

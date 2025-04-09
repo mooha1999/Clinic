@@ -23,8 +23,8 @@ public:
                  LinkedQueue<Resource *> exerciseRooms,
                  priQueue<Patient *> inTreatmentPatients,
                  ArrayStack<Patient *> finishedPatients,
-                 EarlyPList earlyPatients,
-                 EU_WaitList electromagneticWaitList,
-                 EU_WaitList ultrasonicWaitList,
-                 X_WaitList exerciseWaitList);
+                 priQueue<Patient *> earlyPatients,
+                 LinkedQueue<Patient *> electromagneticWaitList,
+                 LinkedQueue<Patient *> ultrasonicWaitList,
+                 LinkedQueue<Patient *> exerciseWaitList);
 };

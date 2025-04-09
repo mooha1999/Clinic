@@ -70,6 +70,17 @@ public:
 		}
 		return size;
 	}
+	LinkedQueue<T> clone()
+	{
+		LinkedQueue<T> newQueue;
+		Node<T> *current = frontPtr;
+		while (current != nullptr)
+		{
+			newQueue.enqueue(current->getItem());
+			current = current->getNext();
+		}
+		return newQueue;
+	}
 	~LinkedQueue();
 };
 /////////////////////////////////////////////////////////////////////////////////////////
