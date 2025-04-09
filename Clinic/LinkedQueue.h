@@ -177,18 +177,6 @@ bool LinkedQueue<T>::peek(T &frntEntry) const
 template <typename T>
 LinkedQueue<T>::~LinkedQueue()
 {
-	// Note that the cout statements here is just for learning purpose
-	// They should be normally removed from the destructor
-	cout << "\nStarting LinkedQueue destructor...";
-	cout << "\nFreeing all nodes in the queue...";
-
-	// Free all nodes in the queue
-	T temp;
-	while (dequeue(temp))
-		;
-
-	cout << "\n Is LinkedQueue Empty now?? ==> " << boolalpha << isEmpty();
-	cout << "\nEnding LinkedQueue destructor..." << endl;
 }
 
 #endif
