@@ -21,6 +21,8 @@ public:
 private:
 	int id, appointmentTime, arrivalTime, assignmentTime;
 	int finishTime;
+	int waitingTime;
+	int treatmentTime;
 	Type type;
 	Status status;
 	LinkedQueue<Treatment *> *treatments;
@@ -31,6 +33,8 @@ public:
 	int getAppointmentTime();
 	int getArrivalTime();
 	int getAssignmentTime();
+	int getWaitingTime();
+	int getTreatmentTime();
 	Type getType();
 	Status getStatus();
 	LinkedQueue<Treatment *> *getTreatments();
@@ -46,4 +50,5 @@ public:
 	bool isWaiting();
 	bool isServing();
 	bool isFinished();
+	void addToWaitingTime(int amount);
 };

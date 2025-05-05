@@ -9,6 +9,16 @@ Patient::Patient(int id, int appointmentTime, int arrivalTime, Type type, Linked
 	this->type = type;
 	this->status = IDLE;
 	this->assignmentTime = 0;
+	waitingTime = 0;
+	treatmentTime = 0;
+	LinkedQueue<Treatment *> treatmentsClone = treatments->clone();
+	int treatmentsSize = treatmentsClone.getSize();
+	for (int i = 0; i < treatmentsSize; i++)
+	{
+		Treatment *temp = nullptr;
+		treatmentsClone.dequeue(temp);
+		treatmentTime += temp->getDuration();
+	}
 }
 
 int Patient::getId()
@@ -29,6 +39,16 @@ int Patient::getArrivalTime()
 int Patient::getAssignmentTime()
 {
 	return assignmentTime;
+}
+
+int Patient::getWaitingTime()
+{
+	return waitingTime;
+}
+
+int Patient::getTreatmentTime()
+{
+	return treatmentTime;
 }
 
 Patient::Type Patient::getType()
@@ -105,4 +125,9 @@ bool Patient::isServing()
 bool Patient::isFinished()
 {
 	return status == FNSH;
+}
+
+void Patient::addToWaitingTime(int amount)
+{
+	waitingTime += amount;
 }
