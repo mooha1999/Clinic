@@ -30,27 +30,32 @@ void UI::printData(
   cout << endl;
 
   cout << "============================Waiting Patients============================" << endl;
-  cout << electromagneticWaitList.getSize() << " E-therapy patients: ";
+  int electromagneticWaitListSize = electromagneticWaitList.getSize();
+  cout << electromagneticWaitListSize << " E-therapy patients: ";
   // print all of their ids
-  for (int i = 0; i < electromagneticWaitList.getSize(); i++)
+  for (int i = 0; i < electromagneticWaitListSize; i++)
   {
     Patient *p = nullptr;
     electromagneticWaitList.dequeue(p);
     cout << p->getId() << ", ";
   }
   cout << endl;
-  cout << ultrasonicWaitList.getSize() << " U-therapy patients: ";
+
+  int ultrasonicWaitListSize = ultrasonicWaitList.getSize();
+  cout << ultrasonicWaitListSize << " U-therapy patients: ";
   // print all of their ids
-  for (int i = 0; i < ultrasonicWaitList.getSize(); i++)
+  for (int i = 0; i < ultrasonicWaitListSize; i++)
   {
     Patient *p = nullptr;
     ultrasonicWaitList.dequeue(p);
     cout << p->getId() << ", ";
   }
   cout << endl;
-  cout << exerciseWaitList.getSize() << " X-therapy patients: ";
+
+  int exerciseWaitListSize = exerciseWaitList.getSize();
+  cout << exerciseWaitListSize << " X-therapy patients: ";
   // print all of their ids
-  for (int i = 0; i < exerciseWaitList.getSize(); i++)
+  for (int i = 0; i < exerciseWaitListSize; i++)
   {
     Patient *p = nullptr;
     exerciseWaitList.dequeue(p);
@@ -59,22 +64,23 @@ void UI::printData(
   cout << endl;
 
   cout << "============================Early Patients============================" << endl;
-  cout << earlyPatients.getSize() << " patients: ";
+  int earlyPatientsSize = earlyPatients.getSize();
+  cout << earlyPatientsSize << " patients: ";
   // print all of their ids
-  for (int i = 0; i < earlyPatients.getSize(); i++)
+  for (int i = 0; i < earlyPatientsSize; i++)
   {
     Patient *p = nullptr;
     int priority;
     earlyPatients.dequeue(p, priority);
-
     cout << p->getId() << ", ";
   }
   cout << endl;
 
   cout << "============================Late Patients============================" << endl;
-  cout << latePatients.getSize() << " patients: ";
+  int latePatientsSize = latePatients.getSize();
+  cout << latePatientsSize << " patients: ";
   // print all of their ids
-  for (int i = 0; i < latePatients.getSize(); i++)
+  for (int i = 0; i < latePatientsSize; i++)
   {
     Patient *p = nullptr;
     int priority;
@@ -84,29 +90,34 @@ void UI::printData(
   cout << endl;
 
   cout << "============================Available E-Devices============================" << endl;
-  cout << electromagneticDevices.getSize() << " Electromagnetic devices: ";
+  int electromagneticDevicesSize = electromagneticDevices.getSize();
+  cout << electromagneticDevicesSize << " Electromagnetic devices: ";
   // print all of their ids
-  for (int i = 0; i < electromagneticDevices.getSize(); i++)
+  for (int i = 0; i < electromagneticDevicesSize; i++)
   {
     Resource *r = nullptr;
     electromagneticDevices.dequeue(r);
     cout << r->getId() << ", ";
   }
   cout << endl;
+
   cout << "============================Available U-Devices============================" << endl;
-  cout << ultrasonicDevices.getSize() << " Ultrasonic devices: ";
+  int ultrasonicDevicesSize = ultrasonicDevices.getSize();
+  cout << ultrasonicDevicesSize << " Ultrasonic devices: ";
   // print all of their ids
-  for (int i = 0; i < ultrasonicDevices.getSize(); i++)
+  for (int i = 0; i < ultrasonicDevicesSize; i++)
   {
     Resource *r = nullptr;
     ultrasonicDevices.dequeue(r);
     cout << r->getId() << ", ";
   }
   cout << endl;
+
   cout << "============================Available X-Rooms============================" << endl;
-  cout << exerciseRooms.getSize() << " rooms: ";
+  int exerciseRoomsSize = exerciseRooms.getSize();
+  cout << exerciseRoomsSize << " rooms: ";
   // print all of their ids
-  for (int i = 0; i < exerciseRooms.getSize(); i++)
+  for (int i = 0; i < exerciseRoomsSize; i++)
   {
     Resource *r = nullptr;
     exerciseRooms.dequeue(r);
@@ -115,9 +126,10 @@ void UI::printData(
   cout << endl;
 
   cout << "============================In Treatment Patients============================" << endl;
-  cout << inTreatmentPatients.getSize() << " patients: ";
+  int inTreatmentPatientsSize = inTreatmentPatients.getSize();
+  cout << inTreatmentPatientsSize << " patients: ";
   // print all of their ids
-  for (int i = 0; i < inTreatmentPatients.getSize(); i++)
+  for (int i = 0; i < inTreatmentPatientsSize; i++)
   {
     Patient *p = nullptr;
     int priority;
@@ -127,9 +139,10 @@ void UI::printData(
   cout << endl;
 
   cout << "============================Finished Patients============================" << endl;
-  cout << finishedPatients.getSize() << " patients: ";
+  int finishedPatientsSize = finishedPatients.getSize();
+  cout << finishedPatientsSize << " patients: ";
   // print all of their ids
-  for (int i = 0; i < finishedPatients.getSize(); i++)
+  for (int i = 0; i < finishedPatientsSize; i++)
   {
     Patient *p = nullptr;
     finishedPatients.pop(p);
@@ -139,7 +152,7 @@ void UI::printData(
 
   // Allow the user to press enter to continue
   cout << "Press enter to continue..." << endl;
-  //cin.ignore();
-  //cin.get();
+  // cin.ignore();
+  // cin.get();
   cout << endl;
 }

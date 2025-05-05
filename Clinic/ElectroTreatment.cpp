@@ -1,11 +1,11 @@
 #include "ElectroTreatment.h"
 
-bool ElectroTreatment::canAssign()
+bool ElectroTreatment::canAssign(Scheduler *scheduler)
 {
-    return false;
+    return scheduler->isElectromagneticAvailable();
 }
 
-void ElectroTreatment::moveToWait()
+void ElectroTreatment::moveToWait(Scheduler *scheduler)
 {
-	//TODO
+    scheduler->handleFinishedTreatmentPatient(scheduler->getTimestep());
 }

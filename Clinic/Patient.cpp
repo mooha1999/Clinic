@@ -74,12 +74,17 @@ void Patient::setFinishTime(int finishTime)
 
 void Patient::removeTreatment()
 {
-	// remove the last treatment if it exists
+	if (treatments->isEmpty())
+	{
+		return;
+	}
+	Treatment *treatment;
+	treatments->dequeue(treatment);
 }
 
 bool Patient::hasTreatment()
 {
-	return true;
+	return !treatments->isEmpty();
 }
 
 bool Patient::isEarly()

@@ -39,6 +39,7 @@ public:
 	void setStatus(Status status);
 	void setAssignmentTime(int assignmentTime);
 	void setAppointmentTime(int appointmentTime);
+	// remove the first treatment if it exists
 	void removeTreatment();
 	bool hasTreatment();
 	bool isEarly();

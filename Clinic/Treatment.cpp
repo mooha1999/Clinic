@@ -1,6 +1,6 @@
 #include "Treatment.h"
 
-void Treatment::setResource(Resource* resource)
+void Treatment::setResource(Resource *resource)
 {
 	this->resource = resource;
 }
@@ -18,4 +18,9 @@ int Treatment::getAssignmentTime()
 int Treatment::getDuration()
 {
 	return duration;
+}
+
+Resource *Treatment::getResource()
+{
+	return resource;
 }

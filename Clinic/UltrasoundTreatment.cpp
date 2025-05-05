@@ -1,11 +1,11 @@
 #include "UltrasoundTreatment.h"
 
-bool UltrasoundTreatment::canAssign()
+bool UltrasoundTreatment::canAssign(Scheduler *scheduler)
 {
-	return false;
+	return scheduler->isUltrasonicAvailable();
 }
 
-void UltrasoundTreatment::moveToWait()
+void UltrasoundTreatment::moveToWait(Scheduler *scheduler)
 {
-	//TODO
+	scheduler->handleFinishedTreatmentPatient(scheduler->getTimestep());
 }

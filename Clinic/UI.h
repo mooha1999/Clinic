@@ -5,13 +5,14 @@
 #include "ArrayStack.h"
 #include "X_WaitList.h"
 #include "EarlyPList.h"
-#include "Resource.h"
 #include "Patient.h"
-#include "Treatment.h"
 #include "ElectroTreatment.h"
 #include "UltrasoundTreatment.h"
 #include "RoomTreatment.h"
 #include "Resource.h"
+
+class Scheduler; // Forward declaration of Scheduler class
+
 using namespace std;
 class UI
 {

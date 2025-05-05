@@ -1,11 +1,11 @@
 #include "RoomTreatment.h"
 
-bool RoomTreatment::canAssign()
+bool RoomTreatment::canAssign(Scheduler *scheduler)
 {
-    return false;
+    return scheduler->isExerciseRoomAvailable();
 }
 
-void RoomTreatment::moveToWait()
+void RoomTreatment::moveToWait(Scheduler *scheduler)
 {
-	//TODO
+    scheduler->handleFinishedTreatmentPatient(scheduler->getTimestep());
 }

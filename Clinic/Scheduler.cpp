@@ -1,4 +1,5 @@
 #include "Scheduler.h"
+#include "UI.h"
 
 void Scheduler::readInputFile(string fileName)
 {
@@ -72,131 +73,6 @@ void Scheduler::populateDeviceList(int deviceCount, LinkedQueue<Resource *> *dev
   }
 }
 
-void Scheduler::randomWaitingAssignment(Patient *patient)
-{
-  int randomNum = rand() % 100 + 1;
-  if (randomNum < 33)
-  {
-    electromagneticWaitList->enqueue(patient);
-  }
-  else if (randomNum < 66)
-  {
-    ultrasonicWaitList->enqueue(patient);
-  }
-  else
-  {
-    exerciseWaitList->enqueue(patient);
-  }
-}
-
-EU_WaitList *Scheduler::getRandomWaitList()
-{
-  int randomNum = rand() % 100 + 1;
-  if (randomNum < 33)
-  {
-    return electromagneticWaitList;
-  }
-  else if (randomNum < 66)
-  {
-    return ultrasonicWaitList;
-  }
-  else
-  {
-    return exerciseWaitList;
-  }
-}
-
-void Scheduler::randomGenerator(int timestep)
-{
-  int randomNum = rand() % 100 + 1;
-  Patient *nextPatient = nullptr;
-  int priority;
-  if (randomNum < 10)
-  {
-    earlyPatients->dequeue(nextPatient, priority);
-    if (nextPatient != nullptr)
-    {
-      randomWaitingAssignment(nextPatient);
-    }
-  }
-  else if (randomNum < 20)
-  {
-    latePatients->dequeue(nextPatient, priority);
-    if (nextPatient != nullptr)
-    {
-      priority *= -1;
-      priority = (priority - nextPatient->getAppointmentTime()) + nextPatient->getArrivalTime();
-      randomWaitingAssignment(nextPatient);
-    }
-  }
-  else if (randomNum < 40)
-  {
-    EU_WaitList *waitList = getRandomWaitList();
-    waitList->dequeue(nextPatient);
-    if (nextPatient != nullptr)
-    {
-      inTreatmentPatients->enqueue(nextPatient, nextPatient->getAppointmentTime());
-      nextPatient->setAssignmentTime(timestep);
-      nextPatient->setStatus(Patient::SERV);
-
-      waitList->dequeue(nextPatient);
-      if (nextPatient != nullptr)
-      {
-        inTreatmentPatients->enqueue(nextPatient, nextPatient->getAppointmentTime());
-        nextPatient->setAssignmentTime(timestep);
-        nextPatient->setStatus(Patient::SERV);
-      }
-    }
-  }
-  else if (randomNum < 50)
-  {
-    inTreatmentPatients->dequeue(nextPatient, priority);
-    if (nextPatient != nullptr)
-    {
-      randomWaitingAssignment(nextPatient);
-    }
-  }
-  else if (randomNum < 60)
-  {
-    inTreatmentPatients->dequeue(nextPatient, priority);
-    if (nextPatient != nullptr)
-    {
-      nextPatient->setStatus(Patient::FNSH);
-      nextPatient->setFinishTime(timestep);
-      finishedPatients->push(nextPatient);
-    }
-  }
-  else if (randomNum < 70)
-  {
-    exerciseWaitList->dequeue(nextPatient);
-    if (nextPatient != nullptr)
-    {
-      nextPatient->setStatus(Patient::FNSH);
-      nextPatient->setFinishTime(timestep);
-      finishedPatients->push(nextPatient);
-    }
-  }
-  else if (randomNum < 80)
-  {
-    earlyPatients->dequeue(nextPatient, priority);
-    if (nextPatient != nullptr)
-    {
-      int newAppointmentTime = randomNewappointmentTime(nextPatient->getAppointmentTime());
-      nextPatient->setAppointmentTime(newAppointmentTime);
-      nextPatient->setStatus(Patient::IDLE);
-      nextPatient->setFinishTime(timestep);
-      finishedPatients->push(nextPatient);
-    }
-  }
-}
-
-int Scheduler::randomNewappointmentTime(int oldAppointmentTime)
-{
-  int randomNum = rand() % 30 + 5;
-  int newAppointmentTime = oldAppointmentTime + randomNum;
-  return newAppointmentTime;
-}
-
 void Scheduler::handleCurrentPatient(Patient *currentPatient, int timestep)
 {
   if (currentPatient->getArrivalTime() != timestep)
@@ -206,7 +82,7 @@ void Scheduler::handleCurrentPatient(Patient *currentPatient, int timestep)
   allPatients->dequeue(currentPatient);
   if (currentPatient->getAppointmentTime() < timestep)
   {
-    int penalty = timestep + (timestep - currentPatient->getAppointmentTime()) / 2;
+    int penalty = timestep + (timestep - currentPatient->getAppointmentTime());
     latePatients->enqueue(currentPatient, penalty * -1);
   }
   else if (currentPatient->getAppointmentTime() > timestep)
@@ -215,8 +91,95 @@ void Scheduler::handleCurrentPatient(Patient *currentPatient, int timestep)
   }
   else
   {
-    randomWaitingAssignment(currentPatient);
+    movePateintToWaitList(currentPatient, timestep);
   }
+}
+void Scheduler::callTreatmentsMoveToWait(int timestep)
+{
+  // loop through the inTreatmentPatients queue and check if any patients have finished their treatment using the priority as the time to finish
+  // if so, check if they have any treatments left
+  // if they do, move them to the waiting list
+  // if they don't, move them to the finished patients stack
+  Patient *patient = nullptr;
+  int timeToFinish = 0;
+  bool isPatient = inTreatmentPatients->peek(patient, timeToFinish);
+  timeToFinish *= -1;
+  while (isPatient && timeToFinish == timestep)
+  {
+    inTreatmentPatients->peek(patient, timeToFinish);
+    Treatment *treatment = nullptr;
+    patient->getTreatments()->peek(treatment);
+    patient->removeTreatment();
+    treatment->moveToWait(this);
+
+    releaseResource(treatment);
+
+    isPatient = inTreatmentPatients->peek(patient, timeToFinish);
+    timeToFinish *= -1;
+  }
+}
+
+void Scheduler::releaseResource(Treatment *treatment)
+{
+  Resource *resource = treatment->getResource();
+  if (dynamic_cast<ElectroTreatment *>(treatment) != nullptr)
+  {
+    electromagneticDevices->enqueue(resource);
+  }
+  else if (dynamic_cast<UltrasoundTreatment *>(treatment) != nullptr)
+  {
+    ultrasonicDevices->enqueue(resource);
+  }
+  else if (dynamic_cast<RoomTreatment *>(treatment) != nullptr)
+  {
+    if (!resource->isAvailable()) // check if the room was full
+    {
+      resource->decrementCurrentCapacity(); // decrement the current capacity as the room is not full anymore
+      exerciseRooms->enqueue(resource);     // add the room back to the list
+    }
+    else
+    { // if the room was not full, then it is already in the list
+      resource->decrementCurrentCapacity();
+    }
+    treatment->setResource(nullptr); // set the resource to null as it is not in use anymore
+  }
+}
+
+void Scheduler::handleFinishedTreatmentPatient(int timestep)
+{
+  // Check if there are any patients in treatment and if their treatment is finished
+  // If so, move them to the waiting list or finished patients list
+  Patient *patient = nullptr;
+  int timeToFinish = 0;
+  bool isPatient = inTreatmentPatients->peek(patient, timeToFinish);
+  timeToFinish *= -1;
+  if (isPatient && timeToFinish == timestep)
+  {
+    inTreatmentPatients->dequeue(patient, timeToFinish);
+    moveToWaitingOrFinished(patient, timestep);
+  }
+}
+
+LinkedQueue<Patient *> *Scheduler::getLeastLatencyWaitList()
+{
+  LinkedQueue<Patient *> *leastLatencyWaitList = nullptr;
+  int minLatency = INT_MAX;
+  if (electromagneticWaitList->getSize() < minLatency)
+  {
+    minLatency = electromagneticWaitList->getSize();
+    leastLatencyWaitList = electromagneticWaitList;
+  }
+  if (ultrasonicWaitList->getSize() < minLatency)
+  {
+    minLatency = ultrasonicWaitList->getSize();
+    leastLatencyWaitList = ultrasonicWaitList;
+  }
+  if (exerciseWaitList->getSize() < minLatency)
+  {
+    minLatency = exerciseWaitList->getSize();
+    leastLatencyWaitList = exerciseWaitList;
+  }
+  return leastLatencyWaitList;
 }
 
 Scheduler::Scheduler()
@@ -232,12 +195,14 @@ Scheduler::Scheduler()
   electromagneticWaitList = new EU_WaitList();
   ultrasonicWaitList = new EU_WaitList();
   exerciseWaitList = new X_WaitList();
+  ui = new UI();
   pCancel = pReschedule = patientCount = -1;
+  timestep = 0;
 }
 
 void Scheduler::simulate()
 {
-  int timestep = 0;
+  timestep = 0;
   while (finishedPatients->getSize() != patientCount)
   {
     Patient *currentPatient = nullptr;
@@ -246,7 +211,12 @@ void Scheduler::simulate()
     {
       handleCurrentPatient(currentPatient, timestep);
     }
-    randomGenerator(timestep);
+    moveToWaitLists(timestep);
+    waitingToTreatment(electromagneticWaitList, timestep);
+    waitingToTreatment(ultrasonicWaitList, timestep);
+    waitingToTreatment(exerciseWaitList, timestep);
+    callTreatmentsMoveToWait(timestep);
+
     // create clones for each list
     LinkedQueue<Patient *> allPatientsClone = allPatients->clone();
     priQueue<Patient *> latePatientsClone = latePatients->clone();
@@ -260,19 +230,178 @@ void Scheduler::simulate()
     LinkedQueue<Patient *> ultrasonicWaitListClone = ultrasonicWaitList->clone();
     LinkedQueue<Patient *> exerciseWaitListClone = exerciseWaitList->clone();
 
-    ui.printData(timestep,
-                 allPatientsClone,
-                 latePatientsClone,
-                 electromagneticDevicesClone,
-                 ultrasonicDevicesClone,
-                 exerciseRoomsClone,
-                 inTreatmentPatientsClone,
-                 finishedPatientsClone,
-                 earlyPatientsClone,
-                 electromagneticWaitListClone,
-                 ultrasonicWaitListClone,
-                 exerciseWaitListClone);
+    ui->printData(timestep,
+                  allPatientsClone,
+                  latePatientsClone,
+                  electromagneticDevicesClone,
+                  ultrasonicDevicesClone,
+                  exerciseRoomsClone,
+                  inTreatmentPatientsClone,
+                  finishedPatientsClone,
+                  earlyPatientsClone,
+                  electromagneticWaitListClone,
+                  ultrasonicWaitListClone,
+                  exerciseWaitListClone);
 
     timestep++;
+  }
+}
+
+bool Scheduler::isElectromagneticAvailable()
+{
+  Resource *resource = nullptr;
+  return electromagneticDevices->peek(resource);
+}
+
+bool Scheduler::isUltrasonicAvailable()
+{
+  Resource *resource = nullptr;
+  return ultrasonicDevices->peek(resource);
+}
+
+bool Scheduler::isExerciseRoomAvailable()
+{
+  Resource *resource = nullptr;
+  bool isAvailable = exerciseRooms->peek(resource);
+  if (!isAvailable)
+  {
+    return false;
+  }
+  return resource->isAvailable();
+}
+
+void Scheduler::moveToFinishedPatients(Patient *patient, int timestep)
+{
+  finishedPatients->push(patient);
+  patient->setStatus(Patient::FNSH);
+  patient->setFinishTime(timestep);
+}
+
+void Scheduler::movePateintToWaitList(Patient *patient, int timestep)
+{
+  LinkedQueue<Treatment *> *treatments = patient->getTreatments();
+  Treatment *treatment = nullptr;
+  treatments->peek(treatment);
+  if (!treatment)
+  {
+    return;
+  }
+  patient->setStatus(Patient::WAIT);
+  switch (patient->getType())
+  {
+  case Patient::NORMAL:
+    handleNormalPatientToWaitingList(treatment, patient);
+    break;
+  case Patient::RECOVERING:
+    LinkedQueue<Patient *> *waitList = getLeastLatencyWaitList();
+    waitList->enqueue(patient);
+    break;
+  }
+}
+
+void Scheduler::moveToWaitingOrFinished(Patient *patient, int timestep)
+{
+  // Check if the patient has any treatments left
+  if (patient->hasTreatment())
+  {
+    // Move the patient to the waiting list
+    movePateintToWaitList(patient, timestep);
+  }
+  else
+  {
+    // Move the patient to the finished patients stack
+    moveToFinishedPatients(patient, timestep);
+  }
+}
+
+int Scheduler::getTimestep()
+{
+  return timestep;
+}
+
+void Scheduler::handleNormalPatientToWaitingList(Treatment *treatment, Patient *&patient)
+{
+  if (dynamic_cast<ElectroTreatment *>(treatment) != nullptr)
+  {
+    electromagneticWaitList->enqueue(patient);
+  }
+  else if (dynamic_cast<UltrasoundTreatment *>(treatment) != nullptr)
+  {
+    ultrasonicWaitList->enqueue(patient);
+  }
+  else if (dynamic_cast<RoomTreatment *>(treatment) != nullptr)
+  {
+    exerciseWaitList->enqueue(patient);
+  }
+}
+
+void Scheduler::moveToWaitLists(int timestep)
+{
+  // Move patients from late and early lists to wait lists
+  Patient *patient = nullptr;
+  int timeToMove = 0;
+  bool isPatient = latePatients->peek(patient, timeToMove);
+  timeToMove *= -1;
+  while (isPatient && timeToMove == timestep)
+  {
+    latePatients->dequeue(patient, timeToMove);
+    movePateintToWaitList(patient, timestep);
+    isPatient = latePatients->peek(patient, timeToMove);
+    timeToMove *= -1;
+  }
+
+  isPatient = earlyPatients->peek(patient, timeToMove);
+  timeToMove *= -1;
+  while (isPatient && timeToMove == timestep)
+  {
+    earlyPatients->dequeue(patient, timeToMove);
+    movePateintToWaitList(patient, timestep);
+    isPatient = earlyPatients->peek(patient, timeToMove);
+    timeToMove *= -1;
+  }
+}
+
+void Scheduler::waitingToTreatment(LinkedQueue<Patient *> *waitList, int timestep)
+{
+  Patient *patient = nullptr;
+  bool isPatient = waitList->peek(patient);
+  while (isPatient)
+  {
+    Treatment *treatment = nullptr;
+    patient->getTreatments()->peek(treatment);
+    if (!treatment->canAssign(this))
+    {
+      break; // No available resources for this treatment
+    }
+
+    Resource *resource = nullptr;
+    if (dynamic_cast<ElectroTreatment *>(treatment) != nullptr)
+    {
+      electromagneticDevices->dequeue(resource);
+    }
+    else if (dynamic_cast<UltrasoundTreatment *>(treatment) != nullptr)
+    {
+      ultrasonicDevices->dequeue(resource);
+    }
+    else if (dynamic_cast<RoomTreatment *>(treatment) != nullptr)
+    {
+      bool isAvailable = exerciseRooms->peek(resource);
+      if (isAvailable)
+      {
+        resource->incrementCurrentCapacity();
+        if (!resource->isAvailable()) // check if the room is full
+        {
+          exerciseRooms->dequeue(resource); // remove the room from the list as it is full
+        }
+      }
+    }
+    treatment->setResource(resource);
+
+    waitList->dequeue(patient);
+    int timeToGetOut = (timestep + treatment->getDuration()) * -1; // negative time as the priority queue sorts descendingly
+    inTreatmentPatients->enqueue(patient, timeToGetOut);
+    patient->setAssignmentTime(timestep);
+    patient->setStatus(Patient::SERV);
+    isPatient = waitList->peek(patient);
   }
 }

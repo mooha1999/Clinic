@@ -1,16 +1,14 @@
 #pragma once
 #include "Treatment.h"
-class RoomTreatment :
-    public Treatment
+#include "Scheduler.h"
+class RoomTreatment : public Treatment
 {
 public:
-	RoomTreatment(int duration) :
-		Treatment(duration)
+	RoomTreatment(int duration) : Treatment(duration)
 	{
 	}
 
-	virtual bool canAssign();
+	virtual bool canAssign(Scheduler *scheduler);
 
-	virtual void moveToWait();
+	virtual void moveToWait(Scheduler *scheduler);
 };
-
