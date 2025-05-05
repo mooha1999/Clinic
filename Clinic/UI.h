@@ -16,7 +16,10 @@ class Scheduler; // Forward declaration of Scheduler class
 using namespace std;
 class UI
 {
+  int mode;
+
 public:
+  void chooseMode();
   void printData(int timestep, LinkedQueue<Patient *> allPatients,
                  priQueue<Patient *> latePatients,
                  LinkedQueue<Resource *> electromagneticDevices,
@@ -28,4 +31,6 @@ public:
                  LinkedQueue<Patient *> electromagneticWaitList,
                  LinkedQueue<Patient *> ultrasonicWaitList,
                  LinkedQueue<Patient *> exerciseWaitList);
+
+  void printEndMessage();
 };

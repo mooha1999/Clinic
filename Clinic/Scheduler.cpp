@@ -202,6 +202,7 @@ Scheduler::Scheduler()
 
 void Scheduler::simulate()
 {
+  ui->chooseMode();
   timestep = 0;
   while (finishedPatients->getSize() != patientCount)
   {
@@ -245,6 +246,7 @@ void Scheduler::simulate()
 
     timestep++;
   }
+  ui->printEndMessage();
 }
 
 bool Scheduler::isElectromagneticAvailable()

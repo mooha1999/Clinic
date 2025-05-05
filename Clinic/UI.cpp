@@ -1,5 +1,16 @@
 #include "UI.h"
 
+void UI::chooseMode()
+{
+  cout << "Choose mode: 1 for interactive, 2 for silent" << endl;
+  cin >> mode;
+  if (mode != 1 && mode != 2)
+  {
+    cout << "Invalid mode, defaulting to interactive" << endl;
+    mode = 1;
+  }
+}
+
 void UI::printData(
     int timestep,
     LinkedQueue<Patient *> allPatients,
@@ -14,6 +25,10 @@ void UI::printData(
     LinkedQueue<Patient *> ultrasonicWaitList,
     LinkedQueue<Patient *> exerciseWaitList)
 {
+  if (mode == 2)
+  {
+    return; // Silent mode, do not print anything
+  }
 
   cout << "Current timestep: " << timestep << endl;
 
@@ -121,7 +136,7 @@ void UI::printData(
   {
     Resource *r = nullptr;
     exerciseRooms.dequeue(r);
-    cout << r->getId() << ", ";
+    cout << 'R' << r->getId() << '[' << r->getCurrentCapacity() << ", " << r->getCapacity() << "], ";
   }
   cout << endl;
 
@@ -153,6 +168,11 @@ void UI::printData(
   // Allow the user to press enter to continue
   cout << "Press enter to continue..." << endl;
   // cin.ignore();
-  // cin.get();
+  cin.get();
   cout << endl;
+}
+
+void UI::printEndMessage()
+{
+  cout << "Simulation ends, Output file created" << endl;
 }
